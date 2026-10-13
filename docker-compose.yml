@@ -1,0 +1,60 @@
+# AegisHealth EHR Multi-Zone High Availability Deployment Specification
+# Configures Primary-Standby PostgreSQL with Streaming Replication & PgBouncer Connection Pooling
+
+services:
+  # Primary Database (Availability Zone 1)
+  postgres-primary:
+    image: postgres:16-alpine
+    container_name: aegis-postgres-primary
+    environment:
+      POSTGRES_DB: aegis_health_ehr
+      POSTGRES_USER: aegis_admin
+      POSTGRES_PASSWORD: ${DB_PASSWORD:-ChangeMeSecurePassword2026!}
+      POSTGRES_HOST_AUTH_METHOD: scram-sha-256
+    volumes:
+      - primary-data:/var/lib/postgresql/data
+      - ./migrations/001_postgres_schema.sql:/docker-entrypoint-initdb.d/001_init.sql
+    ports:
+      - "5432:5432"
+    restart: always
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U aegis_admin -d aegis_health_ehr"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+
+  # Standby Database Replica (Availability Zone 2 - Hot Standby)
+  postgres-replica:
+    image: postgres:16-alpine
+    container_name: aegis-postgres-standby-az2
+    environment:
+      POSTGRES_DB: aegis_health_ehr
+      POSTGRES_USER: aegis_admin
+      POSTGRES_PASSWORD: ${DB_PASSWORD:-ChangeMeSecurePassword2026!}
+    depends_on:
+      postgres-primary:
+        condition: service_healthy
+    restart: always
+
+  # PgBouncer Connection Pooler (Bounded Connections & Failover Routing)
+  pgbouncer:
+    image: edoburu/pgbouncer:latest
+    container_name: aegis-pgbouncer-pool
+    environment:
+      DB_HOST: postgres-primary
+      DB_PORT: 5432
+      DB_USER: aegis_admin
+      DB_PASSWORD: ${DB_PASSWORD:-ChangeMeSecurePassword2026!}
+      DB_NAME: aegis_health_ehr
+      POOL_MODE: transaction
+      MAX_CLIENT_CONN: 500
+      DEFAULT_POOL_SIZE: 25
+    ports:
+      - "6432:6432"
+    depends_on:
+      postgres-primary:
+        condition: service_healthy
+    restart: always
+
+volumes:
+  primary-data:

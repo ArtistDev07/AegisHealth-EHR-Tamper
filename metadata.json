@@ -1,0 +1,6 @@
+{
+  "name": "AegisHealth EHR & Tamper-Evident Audit System",
+  "description": "Production-oriented Electronic Health Record (EHR) system featuring AES-256-GCM column-level encryption, multi-role RBAC, and tamper-evident cryptographic audit logging.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}

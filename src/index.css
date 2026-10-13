@@ -1,0 +1,52 @@
+@import "tailwindcss";
+
+@layer base {
+  :root {
+    --font-sans: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+    --font-mono: 'IBM Plex Mono', ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+    
+    --color-primary: #2457C5;
+    --color-primary-hover: #1D46A5;
+    --color-primary-subtle: #EAF0FF;
+    --color-navy: #142238;
+    --color-sidebar: #111C2D;
+    --color-teal: #0F766E;
+    --color-bg: #F4F7FB;
+    --color-surface: #FFFFFF;
+    --color-surface-muted: #F8FAFC;
+    --color-border: #DCE3EC;
+    --color-text-main: #172033;
+    --color-text-secondary: #596579;
+    --color-text-muted: #6B7280;
+    --color-success: #15803D;
+    --color-warning: #B45309;
+    --color-danger: #B91C1C;
+    --color-info: #1D4ED8;
+  }
+
+  body {
+    font-family: var(--font-sans);
+    background-color: var(--color-bg);
+    color: var(--color-text-main);
+  }
+
+  code, pre, .font-mono {
+    font-family: var(--font-mono);
+  }
+}
+
+/* Custom scrollbars for high-density tables */
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+::-webkit-scrollbar-track {
+  background: #F4F7FB;
+}
+::-webkit-scrollbar-thumb {
+  background: #CBD5E1;
+  border-radius: 3px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: #94A3B8;
+}
